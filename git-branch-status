@@ -5,6 +5,7 @@
 #  Copyright 2011      Jehiah Czebotar     <https://github.com/jehiah>
 #  Copyright 2013      Fredrik Strandin    <https://github.com/kd35a>
 #  Copyright 2014      Kristijan Novoselić <https://github.com/knovoselic>
+#  Copyright 2020      Louis Wust          <https://github.com/liverwust>
 #  Copyright 2014-2020 bill-auger          <https://github.com/bill-auger>
 #
 #  git-branch-status is free software: you can redistribute it and/or modify
@@ -23,6 +24,7 @@
 #    * original `git rev-list` grepping - by Jehiah Czebotar
 #    * "s'all good!" message            - by Fredrik Strandin
 #    * ANSI colors                      - by Kristijan Novoselić
+#    * plain column output format       - by Louis Wust
 #    * various features and maintenance - by bill-auger
 
 #  please direct bug reports, feature requests, or PRs to one of the upstream repos:
@@ -116,18 +118,21 @@ USAGE_MSG
 
 readonly THIS_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo $0)")"
 readonly DEF_CFG_FILE="${THIS_DIR}"/gbs-config.sh.inc
-readonly CFG_FILE=$(        ( [[ "$GBS_CFG_FILE" && -f "$GBS_CFG_FILE" ]] && echo -n "$GBS_CFG_FILE"        ) || \
-                            ( [[ "$DEF_CFG_FILE" && -f "$DEF_CFG_FILE" ]] && echo -n "$DEF_CFG_FILE"        )    )
+readonly CFG_FILE=$(          ( [[ "$GBS_CFG_FILE" && -f "$GBS_CFG_FILE" ]] && echo -n "$GBS_CFG_FILE"          ) || \
+                              ( [[ "$DEF_CFG_FILE" && -f "$DEF_CFG_FILE" ]] && echo -n "$DEF_CFG_FILE"          )    )
 source "$CFG_FILE" 2> /dev/null
-readonly FETCH_PERIOD=$(    ( [[ "$GBS_FETCH_PERIOD" =~ ^-?[0-9]+$     ]] && echo -n "$GBS_FETCH_PERIOD"    ) || \
-                            ( [[ "$CFG_FETCH_PERIOD" =~ ^-?[0-9]+$     ]] && echo -n "$CFG_FETCH_PERIOD"    ) || \
-                                                                             echo -n '-1'                        )
-readonly LAST_FETCH_FILE=$( ( touch "$GBS_LAST_FETCH_FILE" 2> /dev/null   && echo -n "$GBS_LAST_FETCH_FILE" ) || \
-                            ( touch "$CFG_LAST_FETCH_FILE" 2> /dev/null   && echo -n "$CFG_LAST_FETCH_FILE" ) || \
-                                                                             echo -n ~/.GBS_LAST_FETCH           )
-readonly USE_ANSI_COLOR=$(  ( [[ "$GBS_USE_ANSI_COLOR" =~ ^[01]$       ]] && echo -n "$GBS_USE_ANSI_COLOR"  ) || \
-                            ( [[ "$CFG_USE_ANSI_COLOR" =~ ^[01]$       ]] && echo -n "$CFG_USE_ANSI_COLOR"  ) || \
-                                                                             echo -n '1'                         )
+readonly FETCH_PERIOD=$(      ( [[ "$GBS_FETCH_PERIOD" =~ ^-?[0-9]+$     ]] && echo -n "$GBS_FETCH_PERIOD"      ) || \
+                              ( [[ "$CFG_FETCH_PERIOD" =~ ^-?[0-9]+$     ]] && echo -n "$CFG_FETCH_PERIOD"      ) || \
+                                                                               echo -n '-1'                          )
+readonly LAST_FETCH_FILE=$(   ( touch "$GBS_LAST_FETCH_FILE" 2> /dev/null   && echo -n "$GBS_LAST_FETCH_FILE"   ) || \
+                              ( touch "$CFG_LAST_FETCH_FILE" 2> /dev/null   && echo -n "$CFG_LAST_FETCH_FILE"   ) || \
+                                                                               echo -n ~/.GBS_LAST_FETCH             )
+readonly USE_ANSI_COLOR=$(    ( [[ "$GBS_USE_ANSI_COLOR" =~ ^[01]$       ]] && echo -n "$GBS_USE_ANSI_COLOR"    ) || \
+                              ( [[ "$CFG_USE_ANSI_COLOR" =~ ^[01]$       ]] && echo -n "$CFG_USE_ANSI_COLOR"    ) || \
+                                                                               echo -n '1'                           )
+readonly USE_PLAIN_COLUMNS=$( ( [[ "$GBS_USE_PLAIN_COLUMNS" =~ ^[01]$    ]] && echo -n "$GBS_USE_PLAIN_COLUMNS" ) || \
+                              ( [[ "$CFG_USE_PLAIN_COLUMNS" =~ ^[01]$    ]] && echo -n "$CFG_USE_PLAIN_COLUMNS" ) || \
+                                                                               echo -n '0'                           )
 
 
 ## constants ##

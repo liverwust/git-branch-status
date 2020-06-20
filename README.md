@@ -36,6 +36,14 @@ A number of command-line switches exist, selecting various reports that compare 
   * In arbitrary branch comparison reports, the green message indicates that the two compared branches are synchronized with each other.
 
 
+#### Configuration and post-processing
+
+Change the behavior of `git fetch` and the script's output formatting by tweaking settings in `gbs-config.sh.inc` (see the example) or by exporting GBS_\* environment variables.
+
+For example, rerun the command in the screenshot with additional options to produce output like `ps`, which can be more easily parsed using `awk`:
+
+![git-branch-status screen-shot plain][scrot2]
+
 ```
 USAGE:
 
@@ -124,6 +132,7 @@ _NOTE: please direct bug reports, feature requests, or PRs to one of the upstrea
 
 
 [scrot]:          http://bill-auger.github.io/git-branch-status-scrot.png "git-branch-status screen-shot"
+[scrot2]:         http://liverwust.github.io/git-branch-status-scrot-plain.png "git-branch-status screen-shot plain"
 [github-issues]:  https://github.com/bill-auger/git-branch-status/issues/
 [notabug-issues]: https://notabug.org/bill-auger/git-branch-status/issues/
 [pagure-issues]:  https://pagure.io/git-branch-status/issues/
